@@ -215,9 +215,38 @@ def interest():
 
 
 def dividends():
-	print("Nothing here yet")
+	while True:	
+		networthCalc()
+		pm = playerStatus.playerMoney
+		dividends.aapl = networthCalc.aapl / random.randint (20,30) 
+		dividends.goog = networthCalc.goog / random.randint (20,30)
+		dividends.lnx = networthCalc.lnx / random.randint (20,30)
+		dividends.a = networthCalc.a / random.randint (20,30)
+		dividends.c = networthCalc.c / random.randint (20,30)
+		dividends.hog = networthCalc.hog / random.randint (20,30)
+		dividends.hpq = networthCalc.hpq / random.randint (20,30)
+		dividends.intc = networthCalc.intc / random.randint (20,30)
+		dividends.ko = networthCalc.ko / random.randint (20,30)
+		dividends.luv = networthCalc.luv / random.randint (20,30)
+		dividends.mmm = networthCalc.mmm / random.randint (20,30)
+		dividends.msft = networthCalc.msft / random.randint (20,30)
+		dividends.t = networthCalc.t / random.randint (20,30)
+		dividends.tgt = networthCalc.tgt / random.randint (20,30)
+		dividends.txn = networthCalc.txn / random.randint (20,30)
+		dividends.wmt = networthCalc.wmt / random.randint (20,30)
 		
-
+		dividends.total = (dividends.aapl + dividends.goog + dividends.lnx +
+		 dividends.a + dividends.c + dividends.hog + dividends.hpq +
+		  dividends.intc + dividends.ko + dividends.luv + dividends.mmm +
+		   dividends.msft + dividends.t + dividends.tgt + dividends.txn +
+		    dividends.wmt)
+		
+		newCash = dividends.total + pm
+		setattr(playerStatus, "playerMoney", newCash)
+		
+		
+		time.sleep(120)		
+	
 
 def news():
 	print("Nothing here yet")
@@ -457,8 +486,9 @@ is inside a parenthesis.\n \nAs an example: '(b)uy' type b to get to the buy pag
 \n \nWhen buying and selling stock, use lowercase and the stock names shown on\
 the buy/sell \nscreen.\n \nExample: To buy Apple stock just type aapl in the buy screen.\n \n\
 Some time after you have taken a loan you will automaticaly start paying it back.\
-\nYou also pay interest 0,2% , this happens every 2 seconds. \n \nThe game is based fully in python.\
- \n \n// version 0.1.1 //  \n \n \n \n ")
+\nYou also pay interest 0,2% , this happens every 2 seconds.\nEvery 120 seconds companies pay dividends 3-5%. \
+\n \nThe game is based fully in python.\
+\n \n// version 0.1.2 //  \n \n \n \n ")
 
 def colors():
 	colors.sGreen = "\033[1;32;40m"
@@ -506,10 +536,11 @@ playerStatus()
 showAssets()
 stockPrice()
 
-
+#cut threads down to 5 with a function
 
 n = threading.Thread(name="game", target=newGame, daemon=True)
 ms = threading.Thread(name="marketswing", target=marketSwing, daemon=True)
+div = threading.Thread(name="dividends", target=dividends, daemon=True)
 
 s1 = threading.Thread(name="stockPriceChange", target=stockPriceChange, args=("directionOfMarket", stockPrice.aapl, "AAPL: ", "aapl",), daemon=True)
 s2 = threading.Thread(name="stockPriceChange1", target=stockPriceChange, args=("directionOfMarket1", stockPrice.goog, "GOOG: ", "goog",), daemon=True)
@@ -532,6 +563,7 @@ i = threading.Thread(name="interest", target=interest, daemon = True)
 
 n.start()
 ms.start()
+div.start()
 
 s1.start()
 s2.start()
@@ -554,6 +586,7 @@ i.start()
 
 n.join()
 ms.join()
+div.join()
 
 s1.join()
 s2.join()
