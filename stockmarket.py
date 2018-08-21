@@ -9,7 +9,7 @@ import os
 def newGame():
 	while True:
 		playerOption = "d"
-		#playerOption = input("d for action, q to quit: ")
+		#playerOption = input("d to start program, q to quit: ")
 		#this needs to be made correctly.
 		if playerOption != "d":
 			sys.exit()
@@ -37,7 +37,8 @@ def buyStock():
 		try:
 			playerChosenStock = getattr(stockPrice, whatStockToBuy)
 			if playerChosenStock > 0:
-				print("One share of " + colors.Br + whatStockToBuy + colors.stClr + " is currently priced at", playerChosenStock, "$")
+				print("One share of " + colors.Br + whatStockToBuy + colors.stClr +
+				 " is currently priced at", playerChosenStock, "$")
 		
 		
 				howManyToBuy = int(input("How many would you want to buy? \n:"))
@@ -45,7 +46,8 @@ def buyStock():
 				assetsNow = getattr(showAssets, whatStockToBuy)
 				print("Total price of purchase:" + colors.sRed, totalprice, "$" + colors.stClr)
 	
-				areYouSure = input("Confirm buy, " + colors.sGreen + "(y)es " + colors.stClr + "or " + colors.sRed + "(n)o" + colors.stClr + "\n:" )
+				areYouSure = input("Confirm buy, " + colors.sGreen + "(y)es " + colors.stClr + "or " +
+				 colors.sRed + "(n)o" + colors.stClr + "\n:" )
 		
 				if totalprice > playerStatus.playerMoney:
 					print(colors.sRed + "You dont have the cash!" + colors.stClr)
@@ -54,14 +56,16 @@ def buyStock():
 				else:	
 					if areYouSure == "y":
 						playerStatus.playerMoney -= totalprice
-						print("Bought " + colors.Br + whatStockToBuy + colors.stClr + " stock for at total price of" + colors.sRed, totalprice, "$" + colors.stClr)
+						print("Bought " + colors.Br + whatStockToBuy + colors.stClr + " stock for at total price of" +
+						 colors.sRed, totalprice, "$" + colors.stClr)
 						assetsNew = (assetsNow + int(howManyToBuy))
 						setattr(showAssets, whatStockToBuy, assetsNew) 
 		
 					else:
 						pass
 			else:
-				print(colors.Br + whatStockToBuy + colors.stClr + " is currently " + colors.sRed + "negative" + colors.stClr + ", wait until it is positive to buy. Price:", playerChosenStock)
+				print(colors.Br + whatStockToBuy + colors.stClr + " is currently " + colors.sRed + "negative" +
+				 colors.stClr + ", wait until it is positive to buy. Price:", playerChosenStock)
 				pass
 		except ValueError:
 			pass
@@ -88,23 +92,27 @@ def sellStock():
 					print(colors.sRed + "You dont own any shares of " + colors.Br + whatStockToSell + colors.stClr)
 					pass
 				else:	
-					print("One share of " + colors.Br + whatStockToSell + colors.stClr + " is currently priced at: ", playerChosenStock, "$")
+					print("One share of " + colors.Br + whatStockToSell +
+					 colors.stClr + " is currently priced at: ", playerChosenStock, "$")
 					print("You currently have" + colors.Br, howManyDoYouHave, colors.stClr + "shares")
 					howManyToSell = int(input("How many shares would you like to sell? \n:")) 
 					totalprice = (howManyToSell * int(playerChosenStock))
 					assetsNow = getattr(showAssets, whatStockToSell)
 					print("Total sum of sale: " + colors.sGreen, totalprice, "$" + colors.stClr) 
 	
-					areYouSure = input("Confirm sale, " + colors.sGreen + "(y)es " + colors.stClr + "or " + colors.sRed + "(n)o" + colors.stClr + "\n:")
+					areYouSure = input("Confirm sale, " + colors.sGreen + "(y)es " + colors.stClr + "or " + colors.sRed +
+					 "(n)o" + colors.stClr + "\n:")
 	
 					if howManyToSell > assetsNow:
-						print("You don't have that many, you have" + colors.Br, assetsNow, colors.stClr + "shares of " + colors.Br + whatStockToSell + colors.stClr)
+						print("You don't have that many, you have" + colors.Br, assetsNow, colors.stClr + "shares of " +
+						 colors.Br + whatStockToSell + colors.stClr)
 						pass
 	
 					else:
 						if areYouSure == "y":
 							playerStatus.playerMoney += totalprice
-							print("Sold " + colors.Br + whatStockToSell + colors.stClr + " stock for a total price of" + colors.sGreen, totalprice, "$" + colors.stClr)
+							print("Sold " + colors.Br + whatStockToSell + colors.stClr + " stock for a total price of" +
+							 colors.sGreen, totalprice, "$" + colors.stClr)
 							assetsNew = (assetsNow - int(howManyToSell))
 							setattr(showAssets, whatStockToSell, assetsNew)
 		
@@ -129,7 +137,8 @@ def loans():
 	maximumLoan = ((networthCalc.totalnet * 2) - currentLoan * 2)
 	
 	try:
-		playerAnswer = input("Would you like to" + colors.sRed + " (t)ake " + colors.stClr + "a loan or" + colors.sGreen + " (p)ay " + colors.stClr + "back a loan? \n:")	
+		playerAnswer = input("Would you like to" + colors.sRed + " (t)ake " + colors.stClr + "a loan or" +
+		 colors.sGreen + " (p)ay " + colors.stClr + "back a loan? \n:")	
 		if playerAnswer == "t":
 			if maximumLoan > 0:
 				print("You currently qualify for a loan of: ", maximumLoan, "$")
@@ -149,7 +158,7 @@ def loans():
 					setattr(playerStatus, "playerMoney", newCash)
 					print(colors.sGreen + "Loan approved." + colors.stClr)
 			else:
-				print(colors.sRed + "You currently don't qualify for a loan, raise your net worth." + colors.stClr) #need to calculate networth in showPlayerAssets.
+				print(colors.sRed + "You currently don't qualify for a loan, raise your net worth." + colors.stClr) 
 				pass
 		elif playerAnswer == "p": 
 			if currentLoan == 0:
@@ -160,7 +169,8 @@ def loans():
 				if playerChoice > currentLoan:
 					print(colors.sRed + "You dont owe that much money" + colors.stClr) 
 					if playerChoice < playerMoney1: 
-						playerChoice2 = input("Would you like to pay back the full loan? " + colors.sGreen + "(y)es " + colors.stClr + "or " + colors.sRed + "(n)o" + colors.stClr + "\n:")
+						playerChoice2 = input("Would you like to pay back the full loan? " + colors.sGreen + "(y)es " +
+						 colors.stClr + "or " + colors.sRed + "(n)o" + colors.stClr + "\n:")
 						if playerChoice2 == "y":
 								newLoan2 = 0
 								newCash2 = int(playerMoney1 - currentLoan)
@@ -257,7 +267,8 @@ def showMarket():
 		colors.Br + "txn: " + colors.stClr , stockPrice.txn, "$", "\n",
 		colors.Br + "wmt: " + colors.stClr , stockPrice.wmt, "$", "\n")
 	
-		#color change in share price based on up/down in x ammount of time, also percentage change in x ammount of time
+		#color change in share price based on up/down in x ammount of time,
+		# also percentage change in x ammount of time
 
 def networthCalc():
 	networthCalc.aapl = getattr(stockPrice, "aapl") * getattr(showAssets, "aapl")
@@ -328,7 +339,8 @@ def stockPrice():
 	stockPrice.txn = 200
 	stockPrice.wmt = 200
 	
-	stockPrice.stockList = ["aapl", "goog", "lnx", "a", "c", "hog", "hpq", "intc", "ko", "luv", "mmm", "msft", "t", "tgt", "txn", "wmt"]
+	stockPrice.stockList = ["aapl", "goog", "lnx", "a", "c", "hog", "hpq",
+	 "intc", "ko", "luv", "mmm", "msft", "t", "tgt", "txn", "wmt"]
 
 def marketSwing():
 	marketSwing.directionOfMarket = 1
@@ -440,9 +452,13 @@ def stockPriceChange(first, second, third, four):
 			setattr(stockPrice, stockNameTextStr, priceNew)
 
 def helper():
-	print("You move around the game by typing the letter in lowercase that is inside a parenthesis.\n \nAs an example: '(b)uy' type b to get to the buy page. \
-	\n \nWhen buying and selling stock, use lowercase and the stock names shown on the buy/sell \nscreen.\n \nExample: To buy Apple stock just type aapl in the buy screen.\n \n\
-Some time after you have taken a loan you will automaticaly start paying it back. \nYou also pay interest 0,2% , this happens every 2 seconds. \n \nThe game is based fully in python. \n \n// version 0.1.1 //  \n \n \n \n ")
+	print("You move around the game by typing the letter in lowercase that \
+is inside a parenthesis.\n \nAs an example: '(b)uy' type b to get to the buy page. \
+\n \nWhen buying and selling stock, use lowercase and the stock names shown on\
+the buy/sell \nscreen.\n \nExample: To buy Apple stock just type aapl in the buy screen.\n \n\
+Some time after you have taken a loan you will automaticaly start paying it back.\
+\nYou also pay interest 0,2% , this happens every 2 seconds. \n \nThe game is based fully in python.\
+ \n \n// version 0.1.1 //  \n \n \n \n ")
 
 def colors():
 	colors.sGreen = "\033[1;32;40m"
@@ -457,14 +473,16 @@ def colors():
 	
 def gameLogic():
 	
-	playerChoice = input(colors.sGreen + "(b)uy stock, " + colors.sRed + "(s)ell stock, " + colors.sBlue + "show (a)ssets, " + colors.sMagenta + "show (m)arket, " + colors.sYellow + "(l)oans, " + colors.sCyan +  "(h)elp " + colors.stClr + "or (q)uit\n: ")
+	playerChoice = input(colors.sGreen + "(b)uy stock, " + colors.sRed + "(s)ell stock, " + colors.sBlue 
+	+ "show (a)ssets, " + colors.sMagenta + "show (m)arket, " + colors.sYellow + "(l)oans, " + colors.sCyan +
+	  "(h)elp " + colors.stClr + "or (q)uit\n: ")
 		
 	if playerChoice == "b":
 		buyStock()
-		print("Your current money: "+ colors.sGreen ,playerStatus.playerMoney, "$" + colors.stClr)
+		print("Your current money:"+ colors.sGreen ,playerStatus.playerMoney, "$" + colors.stClr)
 	elif playerChoice == "s":
 		sellStock()
-		print("Your current money: " + colors.sGreen ,playerStatus.playerMoney, "$" + colors.stClr)
+		print("Your current money:" + colors.sGreen ,playerStatus.playerMoney, "$" + colors.stClr)
 	elif playerChoice == "a":
 		showPlayerAssets()
 	elif playerChoice == "m":
@@ -482,7 +500,8 @@ def gameLogic():
 
 
 colors()
-print(colors.Br + "Welcome to a the simple " + colors.sGreen + "(c)onsole based " + colors.sRed + "(s)tockmarket game\n" + colors.stClr)
+print(colors.Br + "Welcome to a the simple " + colors.sGreen + "(c)onsole based " + colors.sRed +
+ "(s)tockmarket game\n" + colors.stClr)
 playerStatus()
 showAssets()
 stockPrice()
