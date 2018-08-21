@@ -123,9 +123,10 @@ def sellStock():
 		pass
 			
 def loans():
+	networthCalc()
 	playerMoney1 = playerStatus.playerMoney
 	currentLoan = playerStatus.playerLoan
-	maximumLoan = ((playerMoney1 * 2) - currentLoan*4)
+	maximumLoan = ((networthCalc.totalnet * 2) - currentLoan * 2)
 	
 	try:
 		playerAnswer = input("Would you like to" + colors.sRed + " (t)ake " + colors.stClr + "a loan or" + colors.sGreen + " (p)ay " + colors.stClr + "back a loan? \n:")	
@@ -212,6 +213,7 @@ def news():
 	print("Nothing here yet")
 		
 def showPlayerAssets():
+	networthCalc()
 	print(colors.Br + " aapl:" + colors.stClr , showAssets.aapl, "\n",
 		colors.Br + "goog:" + colors.stClr , showAssets.goog, "\n",
 		colors.Br + "lnx: " + colors.stClr , showAssets.lnx, "\n",
@@ -229,9 +231,12 @@ def showPlayerAssets():
 		colors.Br + "txn: " + colors.stClr , showAssets.txn, "\n",
 		colors.Br + "wmt: " + colors.stClr , showAssets.wmt, "\n","\n", 
 		colors.sGreen + "cash:" + colors.stClr , playerStatus.playerMoney, "$", "\n",
-		colors.sYellow + "loan:" + colors.stClr , playerStatus.playerLoan, "$\n") 
+		colors.sYellow + "loan:" + colors.stClr , playerStatus.playerLoan, "$", "\n",
+		colors.sMagenta + "Total networth:" + colors.stClr , networthCalc.totalnet, "$", "\n",
+		colors.sCyan + "All assets" + colors.stClr , networthCalc.totalincc, "$", "\n",) 
 		
-		#networth calc, color change based on performance x ammount of time
+	
+		#color change based on performance x ammount of time
 		#only show stock owned
 		
 def showMarket():
@@ -254,6 +259,37 @@ def showMarket():
 	
 		#color change in share price based on up/down in x ammount of time, also percentage change in x ammount of time
 
+def networthCalc():
+	networthCalc.aapl = getattr(stockPrice, "aapl") * getattr(showAssets, "aapl")
+	networthCalc.goog = getattr(stockPrice, "goog") * getattr(showAssets, "goog")
+	networthCalc.lnx = getattr(stockPrice, "lnx") * getattr(showAssets, "lnx")
+	networthCalc.a = getattr(stockPrice, "a") * getattr(showAssets, "a")
+	networthCalc.c = getattr(stockPrice, "c") * getattr(showAssets, "c")
+	networthCalc.hog = getattr(stockPrice, "hog") * getattr(showAssets, "hog")
+	networthCalc.hpq = getattr(stockPrice, "hpq") * getattr(showAssets, "hpq")
+	networthCalc.intc = getattr(stockPrice, "intc") * getattr(showAssets, "intc")
+	networthCalc.ko = getattr(stockPrice, "ko") * getattr(showAssets, "ko")
+	networthCalc.luv = getattr(stockPrice, "luv") * getattr(showAssets, "luv")
+	networthCalc.mmm = getattr(stockPrice, "mmm") * getattr(showAssets, "mmm")
+	networthCalc.msft = getattr(stockPrice, "msft") * getattr(showAssets, "msft")
+	networthCalc.t = getattr(stockPrice, "t") * getattr(showAssets, "t")
+	networthCalc.tgt = getattr(stockPrice, "tgt") * getattr(showAssets, "tgt")
+	networthCalc.txn = getattr(stockPrice, "txn") * getattr(showAssets, "txn")
+	networthCalc.wmt = getattr(stockPrice, "wmt") * getattr(showAssets, "wmt")
+	networthCalc.cash = getattr(playerStatus, "playerMoney")
+	networthCalc.credit = getattr(playerStatus, "playerLoan")
+	
+	networthCalc.totalnet = (networthCalc.aapl + networthCalc.goog + networthCalc.lnx + networthCalc.a +
+	networthCalc.c + networthCalc.hog + networthCalc.hpq + networthCalc.intc + networthCalc.ko + networthCalc.luv +
+	networthCalc.mmm + networthCalc.msft + networthCalc.t + networthCalc.tgt + networthCalc.txn +	
+	networthCalc.wmt + networthCalc.cash - networthCalc.credit)
+		
+	networthCalc.totalincc = (networthCalc.aapl + networthCalc.goog + networthCalc.lnx + networthCalc.a +
+	networthCalc.c + networthCalc.hog + networthCalc.hpq + networthCalc.intc + networthCalc.ko + networthCalc.luv +
+	networthCalc.mmm + networthCalc.msft + networthCalc.t + networthCalc.tgt + networthCalc.txn +	
+	networthCalc.wmt + networthCalc.cash)
+	
+
 def showAssets():
 	showAssets.aapl = 0
 	showAssets.goog = 0
@@ -271,6 +307,8 @@ def showAssets():
 	showAssets.tgt = 0
 	showAssets.txn = 0
 	showAssets.wmt = 0
+	
+	
 	
 def stockPrice():
 	stockPrice.aapl = 200
