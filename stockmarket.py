@@ -150,29 +150,32 @@ def loans():
 			else:
 				print(colors.sRed + "You currently don't qualify for a loan, raise your net worth." + colors.stClr) #need to calculate networth in showPlayerAssets.
 				pass
-		elif playerAnswer == "p": #L.1 needs statement to check if player has loan
-			print("Your current loan outstanding is" + colors.sRed, currentLoan, "$" + colors.stClr)
-			playerChoice = int(input("How much would you like to pay back? \n:"))
-			if playerChoice > currentLoan:
-				print(colors.sRed + "You dont owe that much money" + colors.stClr) 
-				if playerChoice < playerMoney1: #L.2 bug in question logic if player has 0 loan, can be fixed with statement in L.1
-					playerChoice2 = input("Would you like to pay back the full loan? " + colors.sGreen + "(y)es " + colors.stClr + "or " + colors.sRed + "(n)o" + colors.stClr + "\n:")
-					if playerChoice2 == "y":
-							newLoan2 = 0
-							newCash2 = int(playerMoney1 - currentLoan)
-							setattr(playerStatus, "playerLoan", newLoan2)
-							setattr(playerStatus, "playerMoney", newCash2)
-							print(colors.sGreen + "Payment succesful." + colors.stClr)
-					else:
-						pass	
-				else:
-					pass
+		elif playerAnswer == "p": 
+			if currentLoan == 0:
+				print(colors.sRed + "You dont have a loan." + colors.stClr)
 			else:
-				newLoan1 = int(currentLoan - playerChoice)
-				newCash1 = int(playerMoney1 - playerChoice)
-				setattr(playerStatus, "playerLoan", newLoan1)
-				setattr(playerStatus, "playerMoney", newCash1)
-				print(colors.sGreen + "Payment succesful." + colors.stClr)
+				print("Your current loan outstanding is" + colors.sRed, currentLoan, "$" + colors.stClr)
+				playerChoice = int(input("How much would you like to pay back? \n:"))
+				if playerChoice > currentLoan:
+					print(colors.sRed + "You dont owe that much money" + colors.stClr) 
+					if playerChoice < playerMoney1: 
+						playerChoice2 = input("Would you like to pay back the full loan? " + colors.sGreen + "(y)es " + colors.stClr + "or " + colors.sRed + "(n)o" + colors.stClr + "\n:")
+						if playerChoice2 == "y":
+								newLoan2 = 0
+								newCash2 = int(playerMoney1 - currentLoan)
+								setattr(playerStatus, "playerLoan", newLoan2)
+								setattr(playerStatus, "playerMoney", newCash2)
+								print(colors.sGreen + "Payment succesful." + colors.stClr)
+						else:
+							pass	
+					else:
+						pass
+				else:
+					newLoan1 = int(currentLoan - playerChoice)
+					newCash1 = int(playerMoney1 - playerChoice)
+					setattr(playerStatus, "playerLoan", newLoan1)
+					setattr(playerStatus, "playerMoney", newCash1)
+					print(colors.sGreen + "Payment succesful." + colors.stClr)
 		else:
 			print(colors.sRed + "Check your typing." + colors.stClr)
 			pass
@@ -316,18 +319,14 @@ def marketSwing():
 			randomChoice = random.randint(1,16)
 			timeToChange = 1
 			
-			# debug change time print(timeToChange, " seconds info next market change")
 			time.sleep(timeToChange)
 				
 			if randomChoice == 1:
 				marketSwing.directionOfMarket = random.randint(1,6)	
-				#print(marketSwing.directionOfMarket, marketSwing.directionOfMarket1, marketSwing.directionOfMarket2)
 			elif randomChoice == 2:
 				marketSwing.directionOfMarket1 = random.randint(1,6)
-				#print(marketSwing.directionOfMarket, marketSwing.directionOfMarket1, marketSwing.directionOfMarket2)
 			elif randomChoice == 3:
 				marketSwing.directionOfMarket2 = random.randint(1,6)
-				#print(marketSwing.directionOfMarket, marketSwing.directionOfMarket1, marketSwing.directionOfMarket2)
 			elif randomChoice == 4:
 				marketSwing.directionOfMarket3 = random.randint(1,6)
 			elif randomChoice == 5:
