@@ -1,3 +1,2 @@
 # stockmarket
-A simple console based stock market simulation/game
-Written in python
+A simple console based stock market simulation/game written in python.
