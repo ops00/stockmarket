@@ -7,6 +7,9 @@ import threading
 import os
 
 def newGame():
+	print(colors.Br + "Welcome to a the simple " + colors.sGreen + "(c)onsole based " + colors.sRed +
+ "(s)tockmarket game\n" + colors.stClr)
+	
 	while True:
 		playerOption = "d"
 		#playerOption = input("d to start program, q to quit: ")
@@ -17,14 +20,11 @@ def newGame():
 			
 			gameLogic()
 			
- 
-
 
 def playerStatus():
 	playerStatus.playerMoney = 10000
 	playerStatus.playerLoan = 0
 	
-
 def buyStock():
 	stockList = stockPrice.stockList
 	print(colors.sBlue + "options:")
@@ -74,13 +74,51 @@ def buyStock():
 
 	else:
 		print(colors.sRed + "Please put in a valid stock name." + colors.stClr)
+
+def buyStockFast(first, second):
+	stockList = stockPrice.stockList
+	whatStockToBuy = first
+	howManyToBuy = second
 	
+	if whatStockToBuy in stockList:
+		
+		try:
+			playerChosenStock = getattr(stockPrice, whatStockToBuy)
+			if playerChosenStock > 0:
+				totalprice = (int(howManyToBuy) * int(playerChosenStock))
+				assetsNow = getattr(showAssets, whatStockToBuy)
+		
+				if totalprice > playerStatus.playerMoney:
+					print(colors.sRed + "You dont have the cash!" + colors.stClr)
+					pass
+	
+				else:	
+					playerStatus.playerMoney -= totalprice
+					print("Bought " + colors.Br + whatStockToBuy + colors.stClr + " stock for at total price of" +
+					 colors.sRed, totalprice, "$" + colors.stClr)
+					assetsNew = (assetsNow + int(howManyToBuy))
+					setattr(showAssets, whatStockToBuy, assetsNew) 
+		
+			else:
+				print(colors.Br + whatStockToBuy + colors.stClr + " is currently " + colors.sRed + "negative" +
+				 colors.stClr + ", wait until it is positive to buy. Price:", playerChosenStock)
+				pass
+		except ValueError:
+			pass
+		
+		
+
+	else:
+		print(colors.sRed + "Please put in a valid stock name." + colors.stClr)
+
+
+
 def sellStock():
 	stockList = stockPrice.stockList
 	print(colors.sBlue + "options:")
 	print(colors.Br + " | ".join(map(str,stockList)) + colors.stClr)
 	whatStockToSell = input("What stock to" + colors.sRed + " sell?" + colors.stClr + "\n:")
-	stockList = stockPrice.stockList
+	
 	
 	
 	if whatStockToSell in stockList:
@@ -118,6 +156,48 @@ def sellStock():
 		
 						else:
 							pass
+			else:
+				print(colors.sRed + "The goverment has put a hold on " + colors.Br + whatStockToSell + 
+				colors.sRed + " please wait until the stock reaches " + colors.sGreen + "20 $" + 
+				colors.sRed + " a share to sell. Price:" + colors.Br, playerChosenStock, colors.stClr + "$")
+				
+		except ValueError:
+			print(colors.sRed + "Please put in a number." + colors.stClr)
+			pass
+	else:
+		print(colors.sRed + "Please put in a valid stock name." + colors.stClr)
+		pass
+		
+def sellStockFast(first, second):
+	stockList = stockPrice.stockList
+	whatStockToSell = first
+	howManyToSell = second
+	
+	
+	if whatStockToSell in stockList:
+		try:
+			howManyDoYouHave = getattr(showAssets, whatStockToSell)
+			playerChosenStock = getattr(stockPrice, whatStockToSell)
+			if playerChosenStock > 20:
+				if howManyDoYouHave <= 0:
+					print(colors.sRed + "You dont own any shares of " + colors.Br + whatStockToSell + colors.stClr)
+					pass
+				else:	
+					totalprice = (int(howManyToSell) * int(playerChosenStock))
+					assetsNow = getattr(showAssets, whatStockToSell)
+	
+					if int(howManyToSell) > assetsNow:
+						print("You don't have that many, you have" + colors.Br, assetsNow, colors.stClr + "shares of " +
+						 colors.Br + whatStockToSell + colors.stClr)
+						pass
+	
+					else:
+						playerStatus.playerMoney += totalprice
+						print("Sold " + colors.Br + whatStockToSell + colors.stClr + " stock for a total price of" +
+						colors.sGreen, totalprice, "$" + colors.stClr)
+						assetsNew = (assetsNow - int(howManyToSell))
+						setattr(showAssets, whatStockToSell, assetsNew)
+			
 			else:
 				print(colors.sRed + "The goverment has put a hold on " + colors.Br + whatStockToSell + 
 				colors.sRed + " please wait until the stock reaches " + colors.sGreen + "20 $" + 
@@ -279,6 +359,11 @@ def showPlayerAssets():
 		#only show stock owned
 		
 def showMarket():
+	
+	showMarket.index = (stockPrice.aapl + stockPrice.goog + stockPrice.lnx + stockPrice.a +
+	stockPrice.c + stockPrice.hog + stockPrice.hpq + stockPrice.intc + stockPrice.ko + stockPrice.luv +
+	stockPrice.mmm + stockPrice.msft + stockPrice.t + stockPrice.tgt + stockPrice.txn + stockPrice.wmt)
+	
 	print(colors.Br + " aapl:" + colors.stClr , stockPrice.aapl, "$", "\n",
 		colors.Br + "goog:" + colors.stClr , stockPrice.goog, "$", "\n",
 		colors.Br + "lnx: " + colors.stClr , stockPrice.lnx, "$", "\n",
@@ -290,11 +375,13 @@ def showMarket():
 		colors.Br + "ko:  " + colors.stClr , stockPrice.ko, "$", "\n",
 		colors.Br + "luv: " + colors.stClr , stockPrice.luv, "$", "\n",
 		colors.Br + "mmm: " + colors.stClr , stockPrice.mmm, "$", "\n",
-		colors.Br + "msft:" + colors.stClr ,stockPrice.msft, "$", "\n",
+		colors.Br + "msft:" + colors.stClr , stockPrice.msft, "$", "\n",
 		colors.Br + "t:   " + colors.stClr , stockPrice.t, "$", "\n",
 		colors.Br + "tgt: " + colors.stClr , stockPrice.tgt, "$", "\n",
 		colors.Br + "txn: " + colors.stClr , stockPrice.txn, "$", "\n",
-		colors.Br + "wmt: " + colors.stClr , stockPrice.wmt, "$", "\n")
+		colors.Br + "wmt: " + colors.stClr , stockPrice.wmt, "$","\n""\n",
+		colors.sCyan + "market index:" + colors.stClr, showMarket.index, "\n")
+	
 	
 		#color change in share price based on up/down in x ammount of time,
 		# also percentage change in x ammount of time
@@ -322,12 +409,12 @@ def networthCalc():
 	networthCalc.totalnet = (networthCalc.aapl + networthCalc.goog + networthCalc.lnx + networthCalc.a +
 	networthCalc.c + networthCalc.hog + networthCalc.hpq + networthCalc.intc + networthCalc.ko + networthCalc.luv +
 	networthCalc.mmm + networthCalc.msft + networthCalc.t + networthCalc.tgt + networthCalc.txn +	
-	networthCalc.wmt + networthCalc.cash - networthCalc.credit)
+	networthCalc.wmt + networthCalc.cash - networthCalc.credit) #needs to be dynamic in the future, if there is more stock
 		
 	networthCalc.totalincc = (networthCalc.aapl + networthCalc.goog + networthCalc.lnx + networthCalc.a +
 	networthCalc.c + networthCalc.hog + networthCalc.hpq + networthCalc.intc + networthCalc.ko + networthCalc.luv +
 	networthCalc.mmm + networthCalc.msft + networthCalc.t + networthCalc.tgt + networthCalc.txn +	
-	networthCalc.wmt + networthCalc.cash)
+	networthCalc.wmt + networthCalc.cash) #needs to be dynamic in the future, if there is more stock
 	
 
 def showAssets():
@@ -347,7 +434,6 @@ def showAssets():
 	showAssets.tgt = 0
 	showAssets.txn = 0
 	showAssets.wmt = 0
-	
 	
 	
 def stockPrice():
@@ -372,34 +458,29 @@ def stockPrice():
 	 "intc", "ko", "luv", "mmm", "msft", "t", "tgt", "txn", "wmt"]
 
 def marketSwing():
-	marketSwing.directionOfMarket = 1
-	marketSwing.directionOfMarket1 = 1
-	marketSwing.directionOfMarket2 = 1
-	marketSwing.directionOfMarket3 = 1
-	marketSwing.directionOfMarket4 = 1
-	marketSwing.directionOfMarket5 = 1
-	marketSwing.directionOfMarket6 = 1
-	marketSwing.directionOfMarket7 = 1
-	marketSwing.directionOfMarket8 = 1
-	marketSwing.directionOfMarket9 = 1
-	marketSwing.directionOfMarket10 = 1
-	marketSwing.directionOfMarket11 = 1
-	marketSwing.directionOfMarket12 = 1
-	marketSwing.directionOfMarket13 = 1
-	marketSwing.directionOfMarket14 = 1
-	marketSwing.directionOfMarket15 = 1
-	
-	
-	while True:
-		holderInput = "y"
+	marketSwing.directionOfMarket = random.randint(1,6)
+	marketSwing.directionOfMarket1 = random.randint(1,6)
+	marketSwing.directionOfMarket2 = random.randint(1,6)
+	marketSwing.directionOfMarket3 = random.randint(1,6)
+	marketSwing.directionOfMarket4 = random.randint(1,6)
+	marketSwing.directionOfMarket5 = random.randint(1,6)
+	marketSwing.directionOfMarket6 = random.randint(1,6)
+	marketSwing.directionOfMarket7 = random.randint(1,6)
+	marketSwing.directionOfMarket8 = random.randint(1,6)
+	marketSwing.directionOfMarket9 = random.randint(1,6)
+	marketSwing.directionOfMarket10 = random.randint(1,6)
+	marketSwing.directionOfMarket11 = random.randint(1,6)
+	marketSwing.directionOfMarket12 = random.randint(1,6)
+	marketSwing.directionOfMarket13 = random.randint(1,6)
+	marketSwing.directionOfMarket14 = random.randint(1,6)
+	marketSwing.directionOfMarket15 = random.randint(1,6)
 		
-			
+	while True:
+		holderInput = "y"			
 		if holderInput == "y":
 			randomChoice = random.randint(1,16)
-			timeToChange = 1
-			
-			time.sleep(timeToChange)
-				
+			timeToChange = 1			
+			time.sleep(timeToChange)				
 			if randomChoice == 1:
 				marketSwing.directionOfMarket = random.randint(1,6)	
 			elif randomChoice == 2:
@@ -433,8 +514,7 @@ def marketSwing():
 			elif randomChoice == 16:
 				marketSwing.directionOfMarket15 = random.randint(1,6)					
 			else:
-				pass
-				
+				pass			
 		else:
 			pass	
 	
@@ -486,9 +566,15 @@ is inside a parenthesis.\n \nAs an example: '(b)uy' type b to get to the buy pag
 \n \nWhen buying and selling stock, use lowercase and the stock names shown on\
 the buy/sell \nscreen.\n \nExample: To buy Apple stock just type aapl in the buy screen.\n \n\
 Some time after you have taken a loan you will automaticaly start paying it back.\
-\nYou also pay interest 0,2% , this happens every 2 seconds.\nEvery 120 seconds companies pay dividends 3-5%. \
+\nYou also pay interest 0,2% , this happens every 2 seconds.\nEvery 120 seconds companies pay dividends 3-5%.\n \n\
+There are also some commands to make the gameplay faster. \nYou can see them by typing (cmd) command\
 \n \nThe game is based fully in python.\
 \n \n// version 0.1.2 //  \n \n \n \n ")
+
+def helperCmd():
+	print("You can type fast commands, try (bb) for fast buy and (ss) for fast sale. \nAfter you type bb a prompt opens up : \
+\ntype stock name and number of shares to buy.\n \nExample :aapl 10 to buy 10 shares of Apple. The sale happens the same way. \n \nBe careful, there is no confirmation. \n")
+
 
 def colors():
 	colors.sGreen = "\033[1;32;40m"
@@ -500,43 +586,54 @@ def colors():
 	colors.Br = "\033[1;37;40m"
 	colors.stClr = "\033[0;0m"		
 			
-	
 def gameLogic():
-	
 	playerChoice = input(colors.sGreen + "(b)uy stock, " + colors.sRed + "(s)ell stock, " + colors.sBlue 
 	+ "show (a)ssets, " + colors.sMagenta + "show (m)arket, " + colors.sYellow + "(l)oans, " + colors.sCyan +
-	  "(h)elp " + colors.stClr + "or (q)uit\n: ")
+	"(h)elp " + colors.stClr + "or (q)uit\n: ")
+	
 		
 	if playerChoice == "b":
 		buyStock()
 		print("Your current money:"+ colors.sGreen ,playerStatus.playerMoney, "$" + colors.stClr)
+	elif playerChoice == "bb":
+		try:
+			playerChosenS, playerChosenA = input("\n:").split()
+			buyStockFast(playerChosenS, playerChosenA)
+		except ValueError:
+			print("type cmd if you need help with fast command options")
+			#buy maximum shares as fast option?
 	elif playerChoice == "s":
 		sellStock()
 		print("Your current money:" + colors.sGreen ,playerStatus.playerMoney, "$" + colors.stClr)
+	elif playerChoice == "ss":
+		try:
+			playerChosenS, playerChosenA = input("\n:").split()
+			sellStockFast(playerChosenS, playerChosenA)
+		except ValueError:
+			print("type cmd if you need help with fast command options")
+			#sell all shares you own as another fast option?
 	elif playerChoice == "a":
 		showPlayerAssets()
 	elif playerChoice == "m":
 		showMarket()
 	elif playerChoice == "l":
 		loans()
+		#create maximum loan fast option/command
+		#create pay back maximum loan fast option
 	elif playerChoice == "h":
 		helper()
+	elif playerChoice == "cmd":
+		helperCmd()
 	elif playerChoice == "q":
 		os._exit(0)
 	else:
 		print("Please chose a valid option, type h for help.")
 
-
-
-
 colors()
-print(colors.Br + "Welcome to a the simple " + colors.sGreen + "(c)onsole based " + colors.sRed +
- "(s)tockmarket game\n" + colors.stClr)
 playerStatus()
 showAssets()
 stockPrice()
 
-#cut threads down to 5 with a function
 
 n = threading.Thread(name="game", target=newGame, daemon=True)
 ms = threading.Thread(name="marketswing", target=marketSwing, daemon=True)
@@ -606,4 +703,3 @@ s15.join()
 s16.join()
 
 i.join()
-
