@@ -6,9 +6,38 @@ import time
 import threading
 import os
 
+#create user profile, difficauly choice, store, make it more personal.
+
+
+class Player(object):
+	def __init__(self, name, money, loan):
+		self.name = name
+		self.money = money
+		self.loan = loan
+
+
+class Stock(object):
+	
+	def __init__(self, name, stockprice, currentOwned):
+		self.name = name
+		self.stockprice = stockprice
+		self.currentOwned = currentOwned
+		
+	def increase(self, amount):
+		self.stockprice += amount
+	
+	def decrease(self, amount):
+		self.stockprice -= amount
+		
+	def dividends(self):
+		self.payment += self.stockprice * self.currentOwned / 25 # not working, fix
+
+
+
 def newGame():
 	print(colors.Br + "Welcome to a the simple " + colors.sGreen + "(c)onsole based " + colors.sRed +
  "(s)tockmarket game\n" + colors.stClr)
+
 	
 	while True:
 		playerOption = "d"
@@ -20,201 +49,164 @@ def newGame():
 			
 			gameLogic()
 			
-
-def playerStatus():
-	playerStatus.playerMoney = 10000
-	playerStatus.playerLoan = 0
 	
 def buyStock():
-	stockList = stockPrice.stockList
+	stockList = stockPriceList.stockList
 	print(colors.sBlue + "options:")
 	print(colors.Br + " | ".join(map(str,stockList)) + colors.stClr)
-	whatStockToBuy = input("What stock to" + colors.sGreen + " buy?" + colors.stClr + "\n:")
+		
+	try:
+		whatStockToBuy = eval(input("What stock to" + colors.sGreen + " buy?" + colors.stClr + "\n:")) #better way to do than eval?
+		if whatStockToBuy.stockprice > 0:
+			print("One share of " + colors.Br + whatStockToBuy.name + colors.stClr +
+			 " is currently priced at", whatStockToBuy.stockprice, "$")
+			
+			howManyToBuy = int(input("How many would you want to buy? \n:"))
+			totalprice = (howManyToBuy * int(whatStockToBuy.stockprice))
+			print("Total price of purchase:" + colors.sRed, totalprice, "$" + colors.stClr)
 	
-	
-	if whatStockToBuy in stockList:
+			areYouSure = input("Confirm buy, " + colors.sGreen + "(y)es " + colors.stClr + "or " +
+			 colors.sRed + "(n)o" + colors.stClr + "\n:" )
 		
-		try:
-			playerChosenStock = getattr(stockPrice, whatStockToBuy)
-			if playerChosenStock > 0:
-				print("One share of " + colors.Br + whatStockToBuy + colors.stClr +
-				 " is currently priced at", playerChosenStock, "$")
-		
-		
-				howManyToBuy = int(input("How many would you want to buy? \n:"))
-				totalprice = (howManyToBuy * int(playerChosenStock))
-				assetsNow = getattr(showAssets, whatStockToBuy)
-				print("Total price of purchase:" + colors.sRed, totalprice, "$" + colors.stClr)
-	
-				areYouSure = input("Confirm buy, " + colors.sGreen + "(y)es " + colors.stClr + "or " +
-				 colors.sRed + "(n)o" + colors.stClr + "\n:" )
-		
-				if totalprice > playerStatus.playerMoney:
-					print(colors.sRed + "You dont have the cash!" + colors.stClr)
-					pass
-	
-				else:	
-					if areYouSure == "y":
-						playerStatus.playerMoney -= totalprice
-						print("Bought " + colors.Br + whatStockToBuy + colors.stClr + " stock for at total price of" +
-						 colors.sRed, totalprice, "$" + colors.stClr)
-						assetsNew = (assetsNow + int(howManyToBuy))
-						setattr(showAssets, whatStockToBuy, assetsNew) 
-		
-					else:
-						pass
-			else:
-				print(colors.Br + whatStockToBuy + colors.stClr + " is currently " + colors.sRed + "negative" +
-				 colors.stClr + ", wait until it is positive to buy. Price:", playerChosenStock)
+			if totalprice > joe.money:
+				print(colors.sRed + "You dont have the cash!" + colors.stClr)
 				pass
-		except ValueError:
-			pass
-		
-		
-
-	else:
-		print(colors.sRed + "Please put in a valid stock name." + colors.stClr)
-
-def buyStockFast(first, second):
-	stockList = stockPrice.stockList
-	whatStockToBuy = first
-	howManyToBuy = second
 	
-	if whatStockToBuy in stockList:
-		
-		try:
-			playerChosenStock = getattr(stockPrice, whatStockToBuy)
-			if playerChosenStock > 0:
-				totalprice = (int(howManyToBuy) * int(playerChosenStock))
-				assetsNow = getattr(showAssets, whatStockToBuy)
-		
-				if totalprice > playerStatus.playerMoney:
-					print(colors.sRed + "You dont have the cash!" + colors.stClr)
-					pass
-	
-				else:	
-					playerStatus.playerMoney -= totalprice
-					print("Bought " + colors.Br + whatStockToBuy + colors.stClr + " stock for at total price of" +
+			else:	
+				if areYouSure == "y":
+					joe.money -= totalprice
+					print("Bought " + colors.Br + whatStockToBuy.name + colors.stClr + " stock for at total price of" +
 					 colors.sRed, totalprice, "$" + colors.stClr)
-					assetsNew = (assetsNow + int(howManyToBuy))
-					setattr(showAssets, whatStockToBuy, assetsNew) 
+					whatStockToBuy.currentOwned += howManyToBuy
 		
-			else:
-				print(colors.Br + whatStockToBuy + colors.stClr + " is currently " + colors.sRed + "negative" +
-				 colors.stClr + ", wait until it is positive to buy. Price:", playerChosenStock)
-				pass
-		except ValueError:
-			pass
-		
-		
-
-	else:
-		print(colors.sRed + "Please put in a valid stock name." + colors.stClr)
-
-
-
-def sellStock():
-	stockList = stockPrice.stockList
-	print(colors.sBlue + "options:")
-	print(colors.Br + " | ".join(map(str,stockList)) + colors.stClr)
-	whatStockToSell = input("What stock to" + colors.sRed + " sell?" + colors.stClr + "\n:")
-	
-	
-	
-	if whatStockToSell in stockList:
-		try:
-			howManyDoYouHave = getattr(showAssets, whatStockToSell)
-			playerChosenStock = getattr(stockPrice, whatStockToSell)
-			if playerChosenStock > 20:
-				if howManyDoYouHave <= 0:
-					print(colors.sRed + "You dont own any shares of " + colors.Br + whatStockToSell + colors.stClr)
+				else:
 					pass
-				else:	
-					print("One share of " + colors.Br + whatStockToSell +
-					 colors.stClr + " is currently priced at: ", playerChosenStock, "$")
-					print("You currently have" + colors.Br, howManyDoYouHave, colors.stClr + "shares")
-					howManyToSell = int(input("How many shares would you like to sell? \n:")) 
-					totalprice = (howManyToSell * int(playerChosenStock))
-					assetsNow = getattr(showAssets, whatStockToSell)
-					print("Total sum of sale: " + colors.sGreen, totalprice, "$" + colors.stClr) 
-	
-					areYouSure = input("Confirm sale, " + colors.sGreen + "(y)es " + colors.stClr + "or " + colors.sRed +
-					 "(n)o" + colors.stClr + "\n:")
-	
-					if howManyToSell > assetsNow:
-						print("You don't have that many, you have" + colors.Br, assetsNow, colors.stClr + "shares of " +
-						 colors.Br + whatStockToSell + colors.stClr)
-						pass
-	
-					else:
-						if areYouSure == "y":
-							playerStatus.playerMoney += totalprice
-							print("Sold " + colors.Br + whatStockToSell + colors.stClr + " stock for a total price of" +
-							 colors.sGreen, totalprice, "$" + colors.stClr)
-							assetsNew = (assetsNow - int(howManyToSell))
-							setattr(showAssets, whatStockToSell, assetsNew)
-		
-						else:
-							pass
-			else:
-				print(colors.sRed + "The goverment has put a hold on " + colors.Br + whatStockToSell + 
-				colors.sRed + " please wait until the stock reaches " + colors.sGreen + "20 $" + 
-				colors.sRed + " a share to sell. Price:" + colors.Br, playerChosenStock, colors.stClr + "$")
-				
-		except ValueError:
-			print(colors.sRed + "Please put in a number." + colors.stClr)
+		else:
+			print(colors.Br + whatStockToBuy.name + colors.stClr + " is currently " + colors.sRed + "negative" +
+			 colors.stClr + ", wait until it is positive to buy. Price:", whatStockToBuy.stockprice)
 			pass
-	else:
+	except (ValueError, NameError, AttributeError, SyntaxError): #need to actually check for wrong stock name in a correct way.
 		print(colors.sRed + "Please put in a valid stock name." + colors.stClr)
 		pass
 		
+		
+def buyStockFast(first, second):
+	whatStockToBuy = first
+	howManyToBuy = second
+		
+	try:
+		if whatStockToBuy.stockprice > 0:
+			totalprice = (howManyToBuy * int(whatStockToBuy.stockprice))
+
+			if totalprice > joe.money:
+				print(colors.sRed + "You dont have the cash!" + colors.stClr)
+				pass
+
+			else:	
+				joe.money -= totalprice
+				print("Bought " + colors.Br + whatStockToBuy.name + colors.stClr + " stock for at total price of" +
+				 colors.sRed, totalprice, "$" + colors.stClr)
+				whatStockToBuy.currentOwned += howManyToBuy
+		
+		else:
+			print(colors.Br + whatStockToBuy.name + colors.stClr + " is currently " + colors.sRed + "negative" +
+			 colors.stClr + ", wait until it is positive to buy. Price:", whatStockToBuy.stockprice)
+			pass
+	except ValueError:
+		print(colors.sRed + "Please put in valid info" + colors.stClr)
+		
+		
+
+def sellStock():
+	stockList = stockPriceList.stockList
+	print(colors.sBlue + "options:")
+	print(colors.Br + " | ".join(map(str,stockList)) + colors.stClr)
+	
+	
+	try:
+		whatStockToSell = eval(input("What stock to" + colors.sRed + " sell?" + colors.stClr + "\n:"))
+		howManyDoYouHave = whatStockToSell.currentOwned
+		playerChosenStock = whatStockToSell.stockprice
+		if playerChosenStock > 20:
+			if howManyDoYouHave <= 0:
+				print(colors.sRed + "You dont own any shares of " + colors.Br + whatStockToSell.name + colors.stClr)
+				pass
+			else:	
+				print("One share of " + colors.Br + whatStockToSell.name +
+				 colors.stClr + " is currently priced at: ", playerChosenStock, "$")
+				print("You currently have" + colors.Br, howManyDoYouHave, colors.stClr + "shares")
+				howManyToSell = int(input("How many shares would you like to sell? \n:")) 
+				totalprice = (howManyToSell * int(playerChosenStock))
+				print("Total sum of sale: " + colors.sGreen, totalprice, "$" + colors.stClr) 
+	
+				areYouSure = input("Confirm sale, " + colors.sGreen + "(y)es " + colors.stClr + "or " + colors.sRed +
+				 "(n)o" + colors.stClr + "\n:")
+
+				if howManyToSell > howManyDoYouHave:
+					print("You don't have that many, you have" + colors.Br, assetsNow, colors.stClr + "shares of " +
+					 colors.Br + whatStockToSell.name + colors.stClr)
+					pass
+	
+				else:
+					if areYouSure == "y":
+						joe.money += totalprice
+						print("Sold " + colors.Br + whatStockToSell.name + colors.stClr + " stock for a total price of" +
+						 colors.sGreen, totalprice, "$" + colors.stClr)
+						whatStockToSell.currentOwned -= howManyToSell
+	
+					else:
+						pass
+		else:
+			print(colors.sRed + "The goverment has put a hold on " + colors.Br + whatStockToSell.name + 
+			colors.sRed + " please wait until the stock reaches " + colors.sGreen + "20 $" + 
+			colors.sRed + " a share to sell. Price:" + colors.Br, playerChosenStock, colors.stClr + "$")
+				
+	except (ValueError, NameError, AttributeError, SyntaxError): #need to actually check for wrong stock name in a correct way.
+		print(colors.sRed + "Please put in valid info." + colors.stClr)
+		pass
+	
+	
+		
 def sellStockFast(first, second):
-	stockList = stockPrice.stockList
+	stockList = stockPriceList.stockList
 	whatStockToSell = first
 	howManyToSell = second
 	
-	
-	if whatStockToSell in stockList:
-		try:
-			howManyDoYouHave = getattr(showAssets, whatStockToSell)
-			playerChosenStock = getattr(stockPrice, whatStockToSell)
-			if playerChosenStock > 20:
-				if howManyDoYouHave <= 0:
-					print(colors.sRed + "You dont own any shares of " + colors.Br + whatStockToSell + colors.stClr)
+	try:
+		howManyDoYouHave = whatStockToSell.currentOwned
+		playerChosenStock = whatStockToSell.stockprice
+		if playerChosenStock > 20:
+			if howManyDoYouHave <= 0:
+				print(colors.sRed + "You dont own any shares of " + colors.Br + whatStockToSell + colors.stClr)
+				pass
+			else:	
+				totalprice = (int(howManyToSell) * int(playerChosenStock))
+					
+				if int(howManyToSell) > howManyDoYouHave:
+					print("You don't have that many, you have" + colors.Br, assetsNow, colors.stClr + "shares of " +
+					 colors.Br + whatStockToSell.name + colors.stClr)
 					pass
-				else:	
-					totalprice = (int(howManyToSell) * int(playerChosenStock))
-					assetsNow = getattr(showAssets, whatStockToSell)
 	
-					if int(howManyToSell) > assetsNow:
-						print("You don't have that many, you have" + colors.Br, assetsNow, colors.stClr + "shares of " +
-						 colors.Br + whatStockToSell + colors.stClr)
-						pass
-	
-					else:
-						playerStatus.playerMoney += totalprice
-						print("Sold " + colors.Br + whatStockToSell + colors.stClr + " stock for a total price of" +
-						colors.sGreen, totalprice, "$" + colors.stClr)
-						assetsNew = (assetsNow - int(howManyToSell))
-						setattr(showAssets, whatStockToSell, assetsNew)
+				else:
+					joe.money += totalprice
+					print("Sold " + colors.Br + whatStockToSell.name + colors.stClr + " stock for a total price of" +
+					colors.sGreen, totalprice, "$" + colors.stClr)
+					whatStockToSell.currentOwned -= howManyToSell 
 			
-			else:
-				print(colors.sRed + "The goverment has put a hold on " + colors.Br + whatStockToSell + 
-				colors.sRed + " please wait until the stock reaches " + colors.sGreen + "20 $" + 
-				colors.sRed + " a share to sell. Price:" + colors.Br, playerChosenStock, colors.stClr + "$")
+		else:
+			print(colors.sRed + "The goverment has put a hold on " + colors.Br + whatStockToSell.name + 
+			colors.sRed + " please wait until the stock reaches " + colors.sGreen + "20 $" + 
+			colors.sRed + " a share to sell. Price:" + colors.Br, playerChosenStock, colors.stClr + "$")
 				
-		except ValueError:
-			print(colors.sRed + "Please put in a number." + colors.stClr)
-			pass
-	else:
-		print(colors.sRed + "Please put in a valid stock name." + colors.stClr)
+	except ValueError: #need to actually check for wrong stock name in better way.
+		print(colors.sRed + "Please put in valid info." + colors.stClr)
 		pass
+	
 			
 def loans():
-	networthCalc()
-	playerMoney1 = playerStatus.playerMoney
-	currentLoan = playerStatus.playerLoan
-	maximumLoan = ((networthCalc.totalnet * 2) - currentLoan * 2)
+	playerMoney = joe.money
+	currentLoan = joe.loan
+	maximumLoan = ((playerMoney * 2) - currentLoan * 3) #put in networth calc
 	
 	try:
 		playerAnswer = input("Would you like to" + colors.sRed + " (t)ake " + colors.stClr + "a loan or" +
@@ -226,16 +218,12 @@ def loans():
 	
 		
 				if howMuchLoanDoesCuWant > maximumLoan:
-					newLoan3 = int(currentLoan + maximumLoan)
-					newCash3 = int(playerMoney1 + maximumLoan)
-					setattr(playerStatus, "playerLoan", newLoan3)
-					setattr(playerStatus, "playerMoney", newCash3)
+					joe.loan += maximumLoan
+					joe.money += maximumLoan
 					print(colors.sGreen + "Maximum loan approved." + colors.stClr)
 				else:
-					newLoan = int(currentLoan + howMuchLoanDoesCuWant)
-					newCash = int(playerMoney1 + howMuchLoanDoesCuWant)
-					setattr(playerStatus, "playerLoan", newLoan)
-					setattr(playerStatus, "playerMoney", newCash)
+					joe.loan += howMuchLoanDoesCuWant
+					joe.money += howMuchLoanDoesCuWant
 					print(colors.sGreen + "Loan approved." + colors.stClr)
 			else:
 				print(colors.sRed + "You currently don't qualify for a loan, raise your net worth." + colors.stClr) 
@@ -248,24 +236,20 @@ def loans():
 				playerChoice = int(input("How much would you like to pay back? \n:"))
 				if playerChoice > currentLoan:
 					print(colors.sRed + "You dont owe that much money" + colors.stClr) 
-					if playerChoice < playerMoney1: 
-						playerChoice2 = input("Would you like to pay back the full loan? " + colors.sGreen + "(y)es " +
+					if playerChoice < playerMoney: 
+						playerChoicePayFullBack = input("Would you like to pay back the full loan? " + colors.sGreen + "(y)es " +
 						 colors.stClr + "or " + colors.sRed + "(n)o" + colors.stClr + "\n:")
-						if playerChoice2 == "y":
-								newLoan2 = 0
-								newCash2 = int(playerMoney1 - currentLoan)
-								setattr(playerStatus, "playerLoan", newLoan2)
-								setattr(playerStatus, "playerMoney", newCash2)
+						if playerChoicePayFullBack == "y":
+								joe.money -= currentLoan
+								joe.loan = 0
 								print(colors.sGreen + "Payment succesful." + colors.stClr)
 						else:
 							pass	
 					else:
 						pass
 				else:
-					newLoan1 = int(currentLoan - playerChoice)
-					newCash1 = int(playerMoney1 - playerChoice)
-					setattr(playerStatus, "playerLoan", newLoan1)
-					setattr(playerStatus, "playerMoney", newCash1)
+					joe.money -= playerChoice
+					joe.loan -= playerChoice
 					print(colors.sGreen + "Payment succesful." + colors.stClr)
 		else:
 			print(colors.sRed + "Check your typing." + colors.stClr)
@@ -278,81 +262,56 @@ def loans():
 def interest():
 	
 	while True:
-		currentLoan = playerStatus.playerLoan 
-		playerMoney1 = playerStatus.playerMoney
+		currentLoan = joe.loan
+		
 		
 		if currentLoan == 0:
 			time.sleep(60)
 			pass
 		else:
 			interest = (currentLoan / 2000) #needs better calculation, needs to be percentage based and random.
-			newCash = int(playerMoney1 - interest)
-			newLoan = int(currentLoan - interest)
-			setattr(playerStatus, "playerMoney", newCash)
-			setattr(playerStatus, "playerLoan" , newLoan)
+			joe.money -= interest
+			joe.loan -= interest
 			time.sleep(2)
 			pass
 
 
 def dividends():
+	'''
 	while True:	
-		networthCalc()
-		pm = playerStatus.playerMoney
-		dividends.aapl = networthCalc.aapl / random.randint (20,30) 
-		dividends.goog = networthCalc.goog / random.randint (20,30)
-		dividends.lnx = networthCalc.lnx / random.randint (20,30)
-		dividends.a = networthCalc.a / random.randint (20,30)
-		dividends.c = networthCalc.c / random.randint (20,30)
-		dividends.hog = networthCalc.hog / random.randint (20,30)
-		dividends.hpq = networthCalc.hpq / random.randint (20,30)
-		dividends.intc = networthCalc.intc / random.randint (20,30)
-		dividends.ko = networthCalc.ko / random.randint (20,30)
-		dividends.luv = networthCalc.luv / random.randint (20,30)
-		dividends.mmm = networthCalc.mmm / random.randint (20,30)
-		dividends.msft = networthCalc.msft / random.randint (20,30)
-		dividends.t = networthCalc.t / random.randint (20,30)
-		dividends.tgt = networthCalc.tgt / random.randint (20,30)
-		dividends.txn = networthCalc.txn / random.randint (20,30)
-		dividends.wmt = networthCalc.wmt / random.randint (20,30)
+		x = joe.money
+		aapld = 0
+		aapld += aapl.dividends #put rest, this is a test, need dividends total calc? 
 		
-		dividends.total = (dividends.aapl + dividends.goog + dividends.lnx +
-		 dividends.a + dividends.c + dividends.hog + dividends.hpq +
-		  dividends.intc + dividends.ko + dividends.luv + dividends.mmm +
-		   dividends.msft + dividends.t + dividends.tgt + dividends.txn +
-		    dividends.wmt)
-		
-		newCash = dividends.total + pm
-		setattr(playerStatus, "playerMoney", newCash)
-		
-		
+		x += aapld
 		time.sleep(120)		
-	
+		#solve this.
+	'''
 
 def news():
 	print("Nothing here yet")
 		
 def showPlayerAssets():
-	networthCalc()
-	print(colors.Br + " aapl:" + colors.stClr , showAssets.aapl, "\n",
-		colors.Br + "goog:" + colors.stClr , showAssets.goog, "\n",
-		colors.Br + "lnx: " + colors.stClr , showAssets.lnx, "\n",
-		colors.Br + "a:   " + colors.stClr , showAssets.a, "\n",
-		colors.Br + "c:   " + colors.stClr , showAssets.c, "\n",
-		colors.Br + "hog: " + colors.stClr , showAssets.hog, "\n",
-		colors.Br + "hpq: " + colors.stClr , showAssets.hpq, "\n",
-		colors.Br + "intc:" + colors.stClr , showAssets.intc, "\n",
-		colors.Br + "ko:  " + colors.stClr , showAssets.ko, "\n",
-		colors.Br + "luv: " + colors.stClr , showAssets.luv, "\n",
-		colors.Br + "mmm: " + colors.stClr , showAssets.mmm, "\n",
-		colors.Br + "msft:" + colors.stClr , showAssets.msft, "\n",
-		colors.Br + "t:   " + colors.stClr , showAssets.t, "\n",
-		colors.Br + "tgt: " + colors.stClr , showAssets.tgt, "\n",
-		colors.Br + "txn: " + colors.stClr , showAssets.txn, "\n",
-		colors.Br + "wmt: " + colors.stClr , showAssets.wmt, "\n","\n", 
-		colors.sGreen + "cash:" + colors.stClr , playerStatus.playerMoney, "$", "\n",
-		colors.sYellow + "loan:" + colors.stClr , playerStatus.playerLoan, "$", "\n",
-		colors.sMagenta + "Total networth:" + colors.stClr , networthCalc.totalnet, "$", "\n",
-		colors.sCyan + "All assets" + colors.stClr , networthCalc.totalincc, "$", "\n",) 
+	print(colors.Br + " aapl:" + colors.stClr , aapl.currentOwned, "\n",
+		colors.Br + "goog:" + colors.stClr , goog.currentOwned, "\n",
+		colors.Br + "lnx: " + colors.stClr , lnx.currentOwned, "\n",
+		colors.Br + "a:   " + colors.stClr , a.currentOwned, "\n",
+		colors.Br + "c:   " + colors.stClr , c.currentOwned, "\n",
+		colors.Br + "hog: " + colors.stClr , hog.currentOwned, "\n",
+		colors.Br + "hpq: " + colors.stClr , hpq.currentOwned, "\n",
+		colors.Br + "intc:" + colors.stClr , intc.currentOwned, "\n",
+		colors.Br + "ko:  " + colors.stClr , ko.currentOwned, "\n",
+		colors.Br + "luv: " + colors.stClr , luv.currentOwned, "\n",
+		colors.Br + "mmm: " + colors.stClr , mmm.currentOwned, "\n",
+		colors.Br + "msft:" + colors.stClr , msft.currentOwned, "\n",
+		colors.Br + "t:   " + colors.stClr , t.currentOwned, "\n",
+		colors.Br + "tgt: " + colors.stClr , tgt.currentOwned, "\n",
+		colors.Br + "txn: " + colors.stClr , txn.currentOwned, "\n",
+		colors.Br + "wmt: " + colors.stClr , wmt.currentOwned, "\n","\n",
+		colors.sGreen + "cash:" + colors.stClr , joe.money, "$", "\n",
+		colors.sYellow + "loan:" + colors.stClr , joe.loan, "$", "\n",)
+		#colors.sMagenta + "Total networth:" + colors.stClr , "$", "\n",
+		#colors.sCyan + "All assets" + colors.stClr , "$", "\n",) 
 		
 	
 		#color change based on performance x ammount of time
@@ -360,26 +319,26 @@ def showPlayerAssets():
 		
 def showMarket():
 	
-	showMarket.index = (stockPrice.aapl + stockPrice.goog + stockPrice.lnx + stockPrice.a +
-	stockPrice.c + stockPrice.hog + stockPrice.hpq + stockPrice.intc + stockPrice.ko + stockPrice.luv +
-	stockPrice.mmm + stockPrice.msft + stockPrice.t + stockPrice.tgt + stockPrice.txn + stockPrice.wmt)
+	showMarket.index = (aapl.stockprice + goog.stockprice + lnx.stockprice + a.stockprice +
+	c.stockprice + hog.stockprice + hpq.stockprice + intc.stockprice + ko.stockprice + luv.stockprice +
+	mmm.stockprice + msft.stockprice + t.stockprice + tgt.stockprice + txn.stockprice + wmt.stockprice)
 	
-	print(colors.Br + " aapl:" + colors.stClr , stockPrice.aapl, "$", "\n",
-		colors.Br + "goog:" + colors.stClr , stockPrice.goog, "$", "\n",
-		colors.Br + "lnx: " + colors.stClr , stockPrice.lnx, "$", "\n",
-		colors.Br + "a:   " + colors.stClr , stockPrice.a, "$", "\n",
-		colors.Br + "c:   " + colors.stClr , stockPrice.c, "$", "\n",
-		colors.Br + "hog: " + colors.stClr , stockPrice.hog, "$", "\n",
-		colors.Br + "hpq: " + colors.stClr , stockPrice.hpq, "$", "\n",
-		colors.Br + "intc:" + colors.stClr , stockPrice.intc, "$", "\n",
-		colors.Br + "ko:  " + colors.stClr , stockPrice.ko, "$", "\n",
-		colors.Br + "luv: " + colors.stClr , stockPrice.luv, "$", "\n",
-		colors.Br + "mmm: " + colors.stClr , stockPrice.mmm, "$", "\n",
-		colors.Br + "msft:" + colors.stClr , stockPrice.msft, "$", "\n",
-		colors.Br + "t:   " + colors.stClr , stockPrice.t, "$", "\n",
-		colors.Br + "tgt: " + colors.stClr , stockPrice.tgt, "$", "\n",
-		colors.Br + "txn: " + colors.stClr , stockPrice.txn, "$", "\n",
-		colors.Br + "wmt: " + colors.stClr , stockPrice.wmt, "$","\n""\n",
+	print(colors.Br + " aapl:" + colors.stClr , aapl.stockprice, "$", "\n",
+		colors.Br + "goog:" + colors.stClr , goog.stockprice, "$", "\n",
+		colors.Br + "lnx: " + colors.stClr , lnx.stockprice, "$", "\n",
+		colors.Br + "a:   " + colors.stClr , a.stockprice, "$", "\n",
+		colors.Br + "c:   " + colors.stClr , c.stockprice, "$", "\n",
+		colors.Br + "hog: " + colors.stClr , hog.stockprice, "$", "\n",
+		colors.Br + "hpq: " + colors.stClr , hpq.stockprice, "$", "\n",
+		colors.Br + "intc:" + colors.stClr , intc.stockprice, "$", "\n",
+		colors.Br + "ko:  " + colors.stClr , ko.stockprice, "$", "\n",
+		colors.Br + "luv: " + colors.stClr , luv.stockprice, "$", "\n",
+		colors.Br + "mmm: " + colors.stClr , mmm.stockprice, "$", "\n",
+		colors.Br + "msft:" + colors.stClr , msft.stockprice, "$", "\n",
+		colors.Br + "t:   " + colors.stClr , t.stockprice, "$", "\n",
+		colors.Br + "tgt: " + colors.stClr , tgt.stockprice, "$", "\n",
+		colors.Br + "txn: " + colors.stClr , txn.stockprice, "$", "\n",
+		colors.Br + "wmt: " + colors.stClr , wmt.stockprice, "$","\n""\n",
 		colors.sCyan + "market index:" + colors.stClr, showMarket.index, "\n")
 	
 	
@@ -387,77 +346,22 @@ def showMarket():
 		# also percentage change in x ammount of time
 
 def networthCalc():
-	networthCalc.aapl = getattr(stockPrice, "aapl") * getattr(showAssets, "aapl")
-	networthCalc.goog = getattr(stockPrice, "goog") * getattr(showAssets, "goog")
-	networthCalc.lnx = getattr(stockPrice, "lnx") * getattr(showAssets, "lnx")
-	networthCalc.a = getattr(stockPrice, "a") * getattr(showAssets, "a")
-	networthCalc.c = getattr(stockPrice, "c") * getattr(showAssets, "c")
-	networthCalc.hog = getattr(stockPrice, "hog") * getattr(showAssets, "hog")
-	networthCalc.hpq = getattr(stockPrice, "hpq") * getattr(showAssets, "hpq")
-	networthCalc.intc = getattr(stockPrice, "intc") * getattr(showAssets, "intc")
-	networthCalc.ko = getattr(stockPrice, "ko") * getattr(showAssets, "ko")
-	networthCalc.luv = getattr(stockPrice, "luv") * getattr(showAssets, "luv")
-	networthCalc.mmm = getattr(stockPrice, "mmm") * getattr(showAssets, "mmm")
-	networthCalc.msft = getattr(stockPrice, "msft") * getattr(showAssets, "msft")
-	networthCalc.t = getattr(stockPrice, "t") * getattr(showAssets, "t")
-	networthCalc.tgt = getattr(stockPrice, "tgt") * getattr(showAssets, "tgt")
-	networthCalc.txn = getattr(stockPrice, "txn") * getattr(showAssets, "txn")
-	networthCalc.wmt = getattr(stockPrice, "wmt") * getattr(showAssets, "wmt")
-	networthCalc.cash = getattr(playerStatus, "playerMoney")
-	networthCalc.credit = getattr(playerStatus, "playerLoan")
+	#networthCalc.aapl = getattr(stockPrice, "aapl") * getattr(showAssets, "aapl") model
 	
+	'''
 	networthCalc.totalnet = (networthCalc.aapl + networthCalc.goog + networthCalc.lnx + networthCalc.a +
 	networthCalc.c + networthCalc.hog + networthCalc.hpq + networthCalc.intc + networthCalc.ko + networthCalc.luv +
 	networthCalc.mmm + networthCalc.msft + networthCalc.t + networthCalc.tgt + networthCalc.txn +	
 	networthCalc.wmt + networthCalc.cash - networthCalc.credit) #needs to be dynamic in the future, if there is more stock
-		
-	networthCalc.totalincc = (networthCalc.aapl + networthCalc.goog + networthCalc.lnx + networthCalc.a +
-	networthCalc.c + networthCalc.hog + networthCalc.hpq + networthCalc.intc + networthCalc.ko + networthCalc.luv +
-	networthCalc.mmm + networthCalc.msft + networthCalc.t + networthCalc.tgt + networthCalc.txn +	
-	networthCalc.wmt + networthCalc.cash) #needs to be dynamic in the future, if there is more stock
-	
-
-def showAssets():
-	showAssets.aapl = 0
-	showAssets.goog = 0
-	showAssets.lnx = 0
-	showAssets.a = 0
-	showAssets.c = 0
-	showAssets.hog = 0
-	showAssets.hpq = 0
-	showAssets.intc = 0
-	showAssets.ko = 0
-	showAssets.luv = 0
-	showAssets.mmm = 0
-	showAssets.msft = 0
-	showAssets.t = 0
-	showAssets.tgt = 0
-	showAssets.txn = 0
-	showAssets.wmt = 0
+	'''
 	
 	
-def stockPrice():
-	stockPrice.aapl = 200
-	stockPrice.goog = 200
-	stockPrice.lnx = 200
-	stockPrice.a = 200
-	stockPrice.c = 200
-	stockPrice.hog = 200
-	stockPrice.hpq = 200
-	stockPrice.intc = 200
-	stockPrice.ko = 200
-	stockPrice.luv = 200
-	stockPrice.mmm = 200
-	stockPrice.msft = 200
-	stockPrice.t = 200
-	stockPrice.tgt = 200
-	stockPrice.txn = 200
-	stockPrice.wmt = 200
-	
-	stockPrice.stockList = ["aapl", "goog", "lnx", "a", "c", "hog", "hpq",
+def stockPriceList():	
+	stockPriceList.stockList = ["aapl", "goog", "lnx", "a", "c", "hog", "hpq",
 	 "intc", "ko", "luv", "mmm", "msft", "t", "tgt", "txn", "wmt"]
 
 def marketSwing():
+	#fix this mess
 	marketSwing.directionOfMarket = random.randint(1,6)
 	marketSwing.directionOfMarket1 = random.randint(1,6)
 	marketSwing.directionOfMarket2 = random.randint(1,6)
@@ -518,47 +422,41 @@ def marketSwing():
 		else:
 			pass	
 	
-def stockPriceChange(first, second, third, four):
+def stockPriceChange(first, second):
+	#and this mess
 	direction = first
+	stock = second
 	timeToChange = 1
-	stockPriceName = second
-	stockNameText = third
-	stockNameTextStr = four
-	
+		
 	while True:
-		priceNow = getattr(stockPrice, stockNameTextStr)
 		directionOfMarkets = getattr(marketSwing, direction)
 		time.sleep(timeToChange)
 		if directionOfMarkets == 1:
 			timeToChange = random.randint(1,10)
 			randomnumber = random.randint(1,5)
-			priceNew = (priceNow + randomnumber)
-			setattr(stockPrice, stockNameTextStr, priceNew)
+			stock.increase(randomnumber)
 		elif directionOfMarkets == 2:
 			timeToChange = random.randint(1,3)
 			randomnumber = random.randint(1,7)
-			priceNew = (priceNow + randomnumber)
-			setattr(stockPrice, stockNameTextStr, priceNew)
+			stock.increase(randomnumber)
 		elif directionOfMarkets == 3:
 			timeToChange = random.randint(1,2)
 			randomnumber = random.randint(1,10)
-			priceNew = (priceNow + randomnumber)
-			setattr(stockPrice, stockNameTextStr, priceNew)
+			stock.increase(randomnumber)
 		elif directionOfMarkets == 4:
 			timeToChange = random.randint(1,10)
 			randomnumber = random.randint(1,2)
-			priceNew = (priceNow - randomnumber)
-			setattr(stockPrice, stockNameTextStr, priceNew)
+			stock.decrease(randomnumber)
 		elif directionOfMarkets == 5:
 			timeToChange = random.randint(1,3)
 			randomnumber = random.randint(1,5)
-			priceNew = (priceNow - randomnumber)
-			setattr(stockPrice, stockNameTextStr, priceNew)
+			stock.decrease(randomnumber)
 		else:
 			timoToChange = random.randint(1,2)
 			randomnumber = random.randint(1,7)
-			priceNew = (priceNow - randomnumber)
-			setattr(stockPrice, stockNameTextStr, priceNew)
+			stock.decrease(randomnumber)
+
+
 
 def helper():
 	print("You move around the game by typing the letter in lowercase that \
@@ -594,22 +492,22 @@ def gameLogic():
 		
 	if playerChoice == "b":
 		buyStock()
-		print("Your current money:"+ colors.sGreen ,playerStatus.playerMoney, "$" + colors.stClr)
+		print("Your current money:"+ colors.sGreen , joe.money, "$" + colors.stClr)
 	elif playerChoice == "bb":
 		try:
 			playerChosenS, playerChosenA = input("\n:").split()
-			buyStockFast(playerChosenS, playerChosenA)
-		except ValueError:
+			buyStockFast(eval(playerChosenS), eval(playerChosenA))
+		except (ValueError, NameError, SyntaxError, AttributeError): #needs a better way
 			print("type cmd if you need help with fast command options")
 			#buy maximum shares as fast option?
 	elif playerChoice == "s":
 		sellStock()
-		print("Your current money:" + colors.sGreen ,playerStatus.playerMoney, "$" + colors.stClr)
+		print("Your current money:" + colors.sGreen , joe.money, "$" + colors.stClr)
 	elif playerChoice == "ss":
 		try:
 			playerChosenS, playerChosenA = input("\n:").split()
-			sellStockFast(playerChosenS, playerChosenA)
-		except ValueError:
+			sellStockFast(eval(playerChosenS), eval(playerChosenA))
+		except (ValueError, NameError, SyntaxError, AttributeError): #needs a better way
 			print("type cmd if you need help with fast command options")
 			#sell all shares you own as another fast option?
 	elif playerChoice == "a":
@@ -630,37 +528,54 @@ def gameLogic():
 		print("Please chose a valid option, type h for help.")
 
 colors()
-playerStatus()
-showAssets()
-stockPrice()
+stockPriceList()
 
+#make stuff
+joe = Player("Joe", 10000, 0)
+aapl = Stock("aapl", 200, 0)
+goog = Stock("goog", 200, 0)
+lnx = Stock("lnx", 200, 0)
+a = Stock("a", 200, 0)
+c = Stock("c", 200, 0)
+hog = Stock("hog", 200, 0)
+hpq = Stock("hpq", 200, 0)
+intc = Stock("intc", 200, 0)
+ko = Stock("ko", 200, 0)
+luv = Stock("luv", 200, 0)
+mmm = Stock("mmm", 200, 0)
+msft = Stock("msft", 200, 0)
+t = Stock("t", 200, 0)
+tgt = Stock("tgt", 200, 0)
+txn = Stock("txn", 200, 0)
+wmt = Stock("wmt", 200, 0)
 
+#threads
 n = threading.Thread(name="game", target=newGame, daemon=True)
 ms = threading.Thread(name="marketswing", target=marketSwing, daemon=True)
-div = threading.Thread(name="dividends", target=dividends, daemon=True)
+#div = threading.Thread(name="dividends", target=dividends, daemon=True)
 
-s1 = threading.Thread(name="stockPriceChange", target=stockPriceChange, args=("directionOfMarket", stockPrice.aapl, "AAPL: ", "aapl",), daemon=True)
-s2 = threading.Thread(name="stockPriceChange1", target=stockPriceChange, args=("directionOfMarket1", stockPrice.goog, "GOOG: ", "goog",), daemon=True)
-s3 = threading.Thread(name="stockPriceChange2", target=stockPriceChange, args=("directionOfMarket2", stockPrice.lnx, "LNX: ", "lnx",), daemon=True)
-s4 = threading.Thread(name="stockPriceChange3", target=stockPriceChange, args=("directionOfMarket3", stockPrice.a, "A: ", "a",), daemon=True)
-s5 = threading.Thread(name="stockPriceChange4", target=stockPriceChange, args=("directionOfMarket4", stockPrice.c, "C: ", "c",), daemon=True)
-s6 = threading.Thread(name="stockPriceChange5", target=stockPriceChange, args=("directionOfMarket5", stockPrice.hog, "HOG: ", "hog",), daemon=True)
-s7 = threading.Thread(name="stockPriceChange6", target=stockPriceChange, args=("directionOfMarket6", stockPrice.hpq, "HPQ: ", "hpq",), daemon=True)
-s8 = threading.Thread(name="stockPriceChange7", target=stockPriceChange, args=("directionOfMarket7", stockPrice.intc, "INTC: ", "intc",), daemon=True)
-s9 = threading.Thread(name="stockPriceChange8", target=stockPriceChange, args=("directionOfMarket8", stockPrice.ko, "KO: ", "ko",), daemon=True)
-s10 = threading.Thread(name="stockPriceChange9", target=stockPriceChange, args=("directionOfMarket9", stockPrice.luv, "LUV: ", "luv",), daemon=True)
-s11 = threading.Thread(name="stockPriceChange10", target=stockPriceChange, args=("directionOfMarket10", stockPrice.mmm, "MMM: ", "mmm",), daemon=True)
-s12 = threading.Thread(name="stockPriceChange11", target=stockPriceChange, args=("directionOfMarket11", stockPrice.msft, "MSFT: ", "msft",), daemon=True)
-s13 = threading.Thread(name="stockPriceChange12", target=stockPriceChange, args=("directionOfMarket12", stockPrice.t, "T: ", "t",), daemon=True)
-s14 = threading.Thread(name="stockPriceChange13", target=stockPriceChange, args=("directionOfMarket13", stockPrice.tgt, "TGT: ", "tgt",), daemon=True)
-s15 = threading.Thread(name="stockPriceChange14", target=stockPriceChange, args=("directionOfMarket14", stockPrice.txn, "TXN: ", "txn",), daemon=True)
-s16 = threading.Thread(name="stockPriceChange15", target=stockPriceChange, args=("directionOfMarket15", stockPrice.wmt, "WMT: ", "wmt",), daemon=True)
+s1 = threading.Thread(name="stockPriceChange", target=stockPriceChange, args=("directionOfMarket", aapl,), daemon=True)
+s2 = threading.Thread(name="stockPriceChange1", target=stockPriceChange, args=("directionOfMarket1", goog,), daemon=True)
+s3 = threading.Thread(name="stockPriceChange2", target=stockPriceChange, args=("directionOfMarket2", lnx,), daemon=True)
+s4 = threading.Thread(name="stockPriceChange3", target=stockPriceChange, args=("directionOfMarket3", a,), daemon=True)
+s5 = threading.Thread(name="stockPriceChange4", target=stockPriceChange, args=("directionOfMarket4", c,), daemon=True)
+s6 = threading.Thread(name="stockPriceChange5", target=stockPriceChange, args=("directionOfMarket5", hog,), daemon=True)
+s7 = threading.Thread(name="stockPriceChange6", target=stockPriceChange, args=("directionOfMarket6", hpq,), daemon=True)
+s8 = threading.Thread(name="stockPriceChange7", target=stockPriceChange, args=("directionOfMarket7", intc,), daemon=True)
+s9 = threading.Thread(name="stockPriceChange8", target=stockPriceChange, args=("directionOfMarket8", ko,), daemon=True)
+s10 = threading.Thread(name="stockPriceChange9", target=stockPriceChange, args=("directionOfMarket9", luv,), daemon=True)
+s11 = threading.Thread(name="stockPriceChange10", target=stockPriceChange, args=("directionOfMarket10", mmm,), daemon=True)
+s12 = threading.Thread(name="stockPriceChange11", target=stockPriceChange, args=("directionOfMarket11", msft,), daemon=True)
+s13 = threading.Thread(name="stockPriceChange12", target=stockPriceChange, args=("directionOfMarket12", t,), daemon=True)
+s14 = threading.Thread(name="stockPriceChange13", target=stockPriceChange, args=("directionOfMarket13", tgt,), daemon=True)
+s15 = threading.Thread(name="stockPriceChange14", target=stockPriceChange, args=("directionOfMarket14", txn,), daemon=True)
+s16 = threading.Thread(name="stockPriceChange15", target=stockPriceChange, args=("directionOfMarket15", wmt,), daemon=True)
 
 i = threading.Thread(name="interest", target=interest, daemon = True)
 
 n.start()
 ms.start()
-div.start()
+#div.start()
 
 s1.start()
 s2.start()
@@ -683,7 +598,7 @@ i.start()
 
 n.join()
 ms.join()
-div.join()
+#div.join()
 
 s1.join()
 s2.join()
