@@ -8,7 +8,6 @@ import os
 
 #create user profile, difficauly 
 
-
 class Player(object):
 	def __init__(self, name, money, loan):
 		self.name = name
@@ -36,26 +35,23 @@ class Stock(object):
 	def totalValue(self):
 		net = self.stockprice * self.currentOwned
 		return net
+
 		 
-		
-
-
 def newGame():
 	print(colors.Br + "Welcome to a the simple " + colors.sGreen + "(c)onsole based " + colors.sRed +
  "(s)tockmarket game\n" + colors.stClr)
 
-	
 	while True:
 		playerOption = "d"
 		#playerOption = input("d to start program, q to quit: ")
 		#this needs to be made correctly.
 		if playerOption != "d":
 			sys.exit()
+		
 		else:
-			
 			gameLogic()
+
 			
-	
 def buyStock():
 	stockList = stockPriceList.stockList
 	print(colors.sBlue + "options:")
@@ -90,11 +86,12 @@ def buyStock():
 		else:
 			print(colors.Br + whatStockToBuy.name + colors.stClr + " is currently " + colors.sRed + "negative" +
 			 colors.stClr + ", wait until it is positive to buy. Price:", whatStockToBuy.stockprice)
-			pass
+			pass	
+			
 	except (ValueError, NameError, AttributeError, SyntaxError): #need to actually check for wrong stock name in a correct way.
 		print(colors.sRed + "Please put in a valid stock name." + colors.stClr)
 		pass
-		
+
 		
 def buyStockFast(first, second):
 	whatStockToBuy = first
@@ -118,17 +115,15 @@ def buyStockFast(first, second):
 			print(colors.Br + whatStockToBuy.name + colors.stClr + " is currently " + colors.sRed + "negative" +
 			 colors.stClr + ", wait until it is positive to buy. Price:", whatStockToBuy.stockprice)
 			pass
+			
 	except ValueError:
-		print(colors.sRed + "Please put in valid info" + colors.stClr)
-		
-		
+		print(colors.sRed + "Please put in valid info" + colors.stClr)	
 
 def sellStock():
 	stockList = stockPriceList.stockList
 	print(colors.sBlue + "options:")
 	print(colors.Br + " | ".join(map(str,stockList)) + colors.stClr)
-	
-	
+
 	try:
 		whatStockToSell = eval(input("What stock to" + colors.sRed + " sell?" + colors.stClr + "\n:"))
 		howManyDoYouHave = whatStockToSell.currentOwned
@@ -137,6 +132,7 @@ def sellStock():
 			if howManyDoYouHave <= 0:
 				print(colors.sRed + "You dont own any shares of " + colors.Br + whatStockToSell.name + colors.stClr)
 				pass
+			
 			else:	
 				print("One share of " + colors.Br + whatStockToSell.name +
 				 colors.stClr + " is currently priced at: ", playerChosenStock, "$")
@@ -144,7 +140,7 @@ def sellStock():
 				howManyToSell = int(input("How many shares would you like to sell? \n:")) 
 				totalprice = (howManyToSell * int(playerChosenStock))
 				print("Total sum of sale: " + colors.sGreen, totalprice, "$" + colors.stClr) 
-	
+				
 				areYouSure = input("Confirm sale, " + colors.sGreen + "(y)es " + colors.stClr + "or " + colors.sRed +
 				 "(n)o" + colors.stClr + "\n:")
 
@@ -162,16 +158,15 @@ def sellStock():
 	
 					else:
 						pass
+						
 		else:
 			print(colors.sRed + "The goverment has put a hold on " + colors.Br + whatStockToSell.name + 
 			colors.sRed + " please wait until the stock reaches " + colors.sGreen + "20 $" + 
 			colors.sRed + " a share to sell. Price:" + colors.Br, playerChosenStock, colors.stClr + "$")
-				
+					
 	except (ValueError, NameError, AttributeError, SyntaxError): #need to actually check for wrong stock name in a correct way.
 		print(colors.sRed + "Please put in valid info." + colors.stClr)
 		pass
-	
-	
 		
 def sellStockFast(first, second):
 	stockList = stockPriceList.stockList
@@ -185,9 +180,9 @@ def sellStockFast(first, second):
 			if howManyDoYouHave <= 0:
 				print(colors.sRed + "You dont own any shares of " + colors.Br + whatStockToSell + colors.stClr)
 				pass
+				
 			else:	
 				totalprice = (int(howManyToSell) * int(playerChosenStock))
-					
 				if int(howManyToSell) > howManyDoYouHave:
 					print("You don't have that many, you have" + colors.Br, assetsNow, colors.stClr + "shares of " +
 					 colors.Br + whatStockToSell.name + colors.stClr)
@@ -208,7 +203,7 @@ def sellStockFast(first, second):
 		print(colors.sRed + "Please put in valid info." + colors.stClr)
 		pass
 	
-			
+		
 def loans():
 	networthCalc()
 	playerMoney = joe.money
@@ -224,41 +219,50 @@ def loans():
 				print("You currently qualify for a loan of: ", maximumLoan, "$")
 				howMuchLoanDoesCuWant = int(input("How much would you like to loan? \n:"))
 	
-		
 				if howMuchLoanDoesCuWant > maximumLoan:
 					joe.loan += maximumLoan
 					joe.money += maximumLoan
 					print(colors.sGreen + "Maximum loan approved." + colors.stClr)
+					
 				else:
 					joe.loan += howMuchLoanDoesCuWant
 					joe.money += howMuchLoanDoesCuWant
 					print(colors.sGreen + "Loan approved." + colors.stClr)
+					
 			else:
 				print(colors.sRed + "You currently don't qualify for a loan, raise your net worth." + colors.stClr) 
 				pass
+				
 		elif playerAnswer == "p": 
 			if currentLoan == 0:
 				print(colors.sRed + "You dont have a loan." + colors.stClr)
+				
 			else:
 				print("Your current loan outstanding is" + colors.sRed, currentLoan, "$" + colors.stClr)
 				playerChoice = int(input("How much would you like to pay back? \n:"))
 				if playerChoice > currentLoan:
 					print(colors.sRed + "You dont owe that much money" + colors.stClr) 
+					
 					if playerChoice < playerMoney: 
 						playerChoicePayFullBack = input("Would you like to pay back the full loan? " + colors.sGreen + "(y)es " +
 						 colors.stClr + "or " + colors.sRed + "(n)o" + colors.stClr + "\n:")
+						 
 						if playerChoicePayFullBack == "y":
 								joe.money -= currentLoan
 								joe.loan = 0
 								print(colors.sGreen + "Payment succesful." + colors.stClr)
+								
 						else:
 							pass	
+							
 					else:
 						pass
+						
 				else:
 					joe.money -= playerChoice
 					joe.loan -= playerChoice
 					print(colors.sGreen + "Payment succesful." + colors.stClr)
+					
 		else:
 			print(colors.sRed + "Check your typing." + colors.stClr)
 			pass
@@ -268,14 +272,12 @@ def loans():
 	
 	
 def interest():
-	
 	while True:
 		currentLoan = joe.loan
-		
-		
 		if currentLoan == 0:
 			time.sleep(60)
 			pass
+			
 		else:
 			interest = (currentLoan / 2000) #needs better calculation, needs to be percentage based and random.
 			joe.money -= interest
@@ -330,12 +332,10 @@ def showPlayerAssets():
 		colors.sMagenta + "Total networth:" + colors.stClr, networthCalc.totalnet , "$", "\n",
 		colors.sCyan + "All assets" + colors.stClr, networthCalc.total , "$", "\n",) 
 		
-	
-		#color change based on performance x ammount of time
-		#only show stock owned
+		#color change based on performance x ammount of time, only show stock owned
+		
 		
 def showMarket():
-	
 	showMarket.index = (aapl.stockprice + goog.stockprice + lnx.stockprice + a.stockprice +
 	c.stockprice + hog.stockprice + hpq.stockprice + intc.stockprice + ko.stockprice + luv.stockprice +
 	mmm.stockprice + msft.stockprice + t.stockprice + tgt.stockprice + txn.stockprice + wmt.stockprice)
@@ -358,9 +358,9 @@ def showMarket():
 		colors.Br + "wmt: " + colors.stClr , wmt.stockprice, "$","\n""\n",
 		colors.sCyan + "market index:" + colors.stClr, showMarket.index, "\n")
 	
-		
 		#color change in share price based on up/down in x ammount of time,
 		# also percentage change in x ammount of time
+		
 
 def networthCalc():
 	x = joe
@@ -391,6 +391,7 @@ def networthCalc():
 def stockPriceList():	
 	stockPriceList.stockList = ["aapl", "goog", "lnx", "a", "c", "hog", "hpq",
 	 "intc", "ko", "luv", "mmm", "msft", "t", "tgt", "txn", "wmt"]
+
 
 def marketSwing():
 	#fix this mess
@@ -522,7 +523,7 @@ def randomEvents():
 			print(colors.sYellow + "//NEWS: " + colors.sRed + stocklist[rs].name + " " + neglist[rpp] + colors.stClr)
 		
 		elif event == 4:
-			stocklist[rs].stockprice -= 100
+			stocklist[rs].stockprice -= 200
 			rpp = random.randint(0,6)
 			print(colors.sYellow + "//NEWS: " + colors.sRed + stocklist[rs].name + " " + neglist[rpp] + colors.stClr)
 			
