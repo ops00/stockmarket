@@ -6,7 +6,7 @@ import time
 import threading
 import os
 
-#create user profile, difficauly choice, store, make it more personal.
+#create user profile, difficauly 
 
 
 class Player(object):
@@ -29,9 +29,15 @@ class Stock(object):
 	def decrease(self, amount):
 		self.stockprice -= amount
 		
-	def dividends(self):
-		self.payment += self.stockprice * self.currentOwned / 25 # not working, fix
-
+	def dividend(self, name):
+		self.dividendPayment = self.stockprice * self.currentOwned / 25 
+		name.money += self.dividendPayment
+		
+	def totalValue(self):
+		net = self.stockprice * self.currentOwned
+		return net
+		 
+		
 
 
 def newGame():
@@ -204,9 +210,11 @@ def sellStockFast(first, second):
 	
 			
 def loans():
+	networthCalc()
 	playerMoney = joe.money
 	currentLoan = joe.loan
-	maximumLoan = ((playerMoney * 2) - currentLoan * 3) #put in networth calc
+	net = networthCalc.totalnet
+	maximumLoan = (net - currentLoan) 
 	
 	try:
 		playerAnswer = input("Would you like to" + colors.sRed + " (t)ake " + colors.stClr + "a loan or" +
@@ -277,21 +285,30 @@ def interest():
 
 
 def dividends():
-	'''
-	while True:	
-		x = joe.money
-		aapld = 0
-		aapld += aapl.dividends #put rest, this is a test, need dividends total calc? 
-		
-		x += aapld
-		time.sleep(120)		
-		#solve this.
-	'''
-
-def news():
-	print("Nothing here yet")
+	x = joe
+	
+	while True:
+		aapl.dividend(x)
+		goog.dividend(x)
+		lnx.dividend(x)
+		a.dividend(x)
+		c.dividend(x)
+		hog.dividend(x)
+		hpq.dividend(x)
+		intc.dividend(x)
+		ko.dividend(x)
+		luv.dividend(x)
+		mmm.dividend(x)
+		msft.dividend(x)
+		t.dividend(x)
+		tgt.dividend(x)
+		txn.dividend(x)
+		wmt.dividend(x)
+		time.sleep(120)
+	
 		
 def showPlayerAssets():
+	networthCalc()
 	print(colors.Br + " aapl:" + colors.stClr , aapl.currentOwned, "\n",
 		colors.Br + "goog:" + colors.stClr , goog.currentOwned, "\n",
 		colors.Br + "lnx: " + colors.stClr , lnx.currentOwned, "\n",
@@ -309,9 +326,9 @@ def showPlayerAssets():
 		colors.Br + "txn: " + colors.stClr , txn.currentOwned, "\n",
 		colors.Br + "wmt: " + colors.stClr , wmt.currentOwned, "\n","\n",
 		colors.sGreen + "cash:" + colors.stClr , joe.money, "$", "\n",
-		colors.sYellow + "loan:" + colors.stClr , joe.loan, "$", "\n",)
-		#colors.sMagenta + "Total networth:" + colors.stClr , "$", "\n",
-		#colors.sCyan + "All assets" + colors.stClr , "$", "\n",) 
+		colors.sYellow + "loan:" + colors.stClr , joe.loan, "$", "\n",
+		colors.sMagenta + "Total networth:" + colors.stClr, networthCalc.totalnet , "$", "\n",
+		colors.sCyan + "All assets" + colors.stClr, networthCalc.total , "$", "\n",) 
 		
 	
 		#color change based on performance x ammount of time
@@ -341,19 +358,34 @@ def showMarket():
 		colors.Br + "wmt: " + colors.stClr , wmt.stockprice, "$","\n""\n",
 		colors.sCyan + "market index:" + colors.stClr, showMarket.index, "\n")
 	
-	
+		
 		#color change in share price based on up/down in x ammount of time,
 		# also percentage change in x ammount of time
 
 def networthCalc():
-	#networthCalc.aapl = getattr(stockPrice, "aapl") * getattr(showAssets, "aapl") model
+	x = joe
 	
-	'''
-	networthCalc.totalnet = (networthCalc.aapl + networthCalc.goog + networthCalc.lnx + networthCalc.a +
-	networthCalc.c + networthCalc.hog + networthCalc.hpq + networthCalc.intc + networthCalc.ko + networthCalc.luv +
-	networthCalc.mmm + networthCalc.msft + networthCalc.t + networthCalc.tgt + networthCalc.txn +	
-	networthCalc.wmt + networthCalc.cash - networthCalc.credit) #needs to be dynamic in the future, if there is more stock
-	'''
+	s1 = aapl.totalValue()
+	s2 = goog.totalValue()
+	s3 = lnx.totalValue()
+	s4 = a.totalValue()
+	s5 = c.totalValue()
+	s6 = hog.totalValue()
+	s7 = hpq.totalValue()
+	s8 = intc.totalValue()
+	s9 = ko.totalValue()
+	s10 = luv.totalValue()
+	s11 = mmm.totalValue()
+	s12 = msft.totalValue()
+	s13 = t.totalValue()
+	s14 = tgt.totalValue()
+	s15 = txn.totalValue()
+	s16 = wmt.totalValue()
+	
+	networthCalc.totalnet = (s1 + s2 + s3 + s4 + s5 + s6 + s7 + s8 + s9 
+	+ s10 + s11 + s12 + s13 + s14 + s15 + s16 + x.money - x.loan)
+	
+	networthCalc.total = networthCalc.totalnet + x.loan
 	
 	
 def stockPriceList():	
@@ -456,6 +488,47 @@ def stockPriceChange(first, second):
 			randomnumber = random.randint(1,7)
 			stock.decrease(randomnumber)
 
+def randomEvents():
+	while True:
+		time.sleep(30)
+		stocklist = [aapl, goog, lnx, a, c, hog, hpq, intc, ko, luv, mmm, msft, t, tgt, txn, wmt]
+		
+		rs = random.randint(0,6)
+				
+		event = random.randint(1,8)
+		poslist = ["releases a new product, its a hit", "profit statement over expections",
+		 "product well received", "stock is on fire", "frenzy",
+		  "CEO: 'The future looks bright for us'",
+		   "CEO: 'Our profits are higher than ever before'"]
+		   
+		neglist = ["product complere failure", "stock plumets",
+		 "ceo fired", "stock in downward spiral",
+		  "customer information has been hacked, stock price down",
+		   "profit statement a dissapointment", "product has critical design flaw"]
+		   
+		if event == 1:
+			stocklist[rs].stockprice += 100
+			rpp = random.randint(0,6)
+			print(colors.sYellow + "//NEWS: " + colors.sGreen + stocklist[rs].name + " " + poslist[rpp] + colors.stClr)
+			
+		elif event == 2:
+			stocklist[rs].stockprice += 200
+			rpp = random.randint(0,6)
+			print(colors.sYellow + "//NEWS: " + colors.sGreen + stocklist[rs].name + " " + poslist[rpp] + colors.stClr)
+			
+		elif event == 3:
+			stocklist[rs].stockprice -= 100
+			rpp = random.randint(0,6)
+			print(colors.sYellow + "//NEWS: " + colors.sRed + stocklist[rs].name + " " + neglist[rpp] + colors.stClr)
+		
+		elif event == 4:
+			stocklist[rs].stockprice -= 100
+			rpp = random.randint(0,6)
+			print(colors.sYellow + "//NEWS: " + colors.sRed + stocklist[rs].name + " " + neglist[rpp] + colors.stClr)
+			
+		else:
+			pass
+	
 
 
 def helper():
@@ -531,6 +604,7 @@ colors()
 stockPriceList()
 
 #make stuff
+
 joe = Player("Joe", 10000, 0)
 aapl = Stock("aapl", 200, 0)
 goog = Stock("goog", 200, 0)
@@ -549,10 +623,13 @@ tgt = Stock("tgt", 200, 0)
 txn = Stock("txn", 200, 0)
 wmt = Stock("wmt", 200, 0)
 
+
+
 #threads
 n = threading.Thread(name="game", target=newGame, daemon=True)
 ms = threading.Thread(name="marketswing", target=marketSwing, daemon=True)
-#div = threading.Thread(name="dividends", target=dividends, daemon=True)
+div = threading.Thread(name="dividends", target=dividends, daemon=True)
+re = threading.Thread(name="randomevent", target=randomEvents, daemon=True)
 
 s1 = threading.Thread(name="stockPriceChange", target=stockPriceChange, args=("directionOfMarket", aapl,), daemon=True)
 s2 = threading.Thread(name="stockPriceChange1", target=stockPriceChange, args=("directionOfMarket1", goog,), daemon=True)
@@ -575,7 +652,8 @@ i = threading.Thread(name="interest", target=interest, daemon = True)
 
 n.start()
 ms.start()
-#div.start()
+div.start()
+re.start()
 
 s1.start()
 s2.start()
@@ -594,11 +672,13 @@ s14.start()
 s15.start()
 s16.start()
 
+
 i.start()
 
 n.join()
 ms.join()
-#div.join()
+div.join()
+re.join()
 
 s1.join()
 s2.join()
