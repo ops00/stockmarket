@@ -6,8 +6,6 @@ import time
 import threading
 import os
 
-#create user profile, difficauly 
-
 class Player(object):
 	def __init__(self, name, money, loan):
 		self.name = name
